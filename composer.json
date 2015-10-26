@@ -1,0 +1,31 @@
+{
+  "name": "buzz/laravel-setting",
+  "description": "Package changes config for laravel 5.*",
+  "keywords": [
+    "laravel",
+    "setting",
+    "settings",
+    "config",
+    "configuration",
+    "laravel5"
+  ],
+  "homepage": "https://github.com/thinhbuzz/laravel-setting",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "ThinhBuzz",
+      "email": "mr.thinhbuzz@gmail.com",
+      "homepage": "https://www.facebook.com/thinh.buzz"
+    }
+  ],
+  "require": {
+    "php": ">=5.4.0",
+    "illuminate/support": "5.0.*|5.1.*",
+    "illuminate/contracts": "5.0.*|5.1.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Buzz\\": "src/"
+    }
+  }
+}
