@@ -84,7 +84,7 @@ Mặc định package sẽ chỉ lưu khi kết thúc request, nếu bạn muố
 ### Các hàm hỗ trợ
 
 ```php
-Setting::clean($default = false);//xóa tất cả settings
+Setting::clean();//xóa tất cả settings
 Setting::save();//Lưu tất cả các thay đổi
 Setting::all();//Lấy ra tất cả settings
 Setting::has($key);//kiểm tra sự tồn tại của setting theo key

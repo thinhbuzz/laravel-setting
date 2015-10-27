@@ -8,9 +8,7 @@ class LaravelSetting
 {
     protected $pathSetting;
     protected $settings;
-    protected $defaultSetting = [
-        'key' => 'value'
-    ];
+    protected $defaultSetting = [];
 
     /**
      *
@@ -131,12 +129,12 @@ class LaravelSetting
         file_put_contents($this->pathSetting, json_encode($this->defaultSetting));
     }
 
-    public function clean($default = false)
+    /**
+     * Remove all settings
+     */
+    public function clean()
     {
-        if ($default)
-            $this->settings = $this->defaultSetting;
-        else
-            $this->settings = [];
+        $this->settings = [];
     }
 
     /**
