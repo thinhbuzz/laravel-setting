@@ -54,7 +54,8 @@ return [
     'path' => storage_path('settings.json'),//đường dẫn tới file `setting.json`, nên đặt ở `storage` hoặc `resources`
     'auto_alias' => true,//tự động tạo thêm alias `Setting`
     'auto_save' => true,//tự động save sau khi kết thúc request (sẽ không hoạt động nếu sử dụng `exit` hoặc `die`)
-    'force_save' => false,//Bắt buộc gọi save dù không thực hiện thao tác add, set, remove
+    'force_save' => false,//bắt buộc gọi save dù không thực hiện thao tác add, set, remove
+    'system_cnf' => false,//get config của app nếu trong setting không tồn tại
 ];
 ```
 
@@ -89,7 +90,7 @@ Setting::clean();//xóa tất cả settings
 Setting::save($force = false);//Lưu tất cả các thay đổi
 Setting::all();//Lấy ra tất cả settings
 Setting::has($key);//kiểm tra sự tồn tại của setting theo key
-Setting::get($key, $default = false);//lấy giá trị theo key
+Setting::get($key, $default = false, $system = false);//lấy giá trị theo key
 Setting::setData($data);//ghi đè tất cả settings
 Setting::add($key, $value);//thêm mới một setting
 Setting::add([
@@ -109,6 +110,13 @@ Setting::set([
     ['name' => 'name2', 'value' => 'value2'],
     ['name' => 'name3', 'value' => 'value3'],
 ]);//cập nhật giá trị mới cho nhiều settings theo key
+Setting::sync();//thêm tất cả config của app vào Setting
+Setting::sync('mail');//thêm config của app vào Setting theo key
+Setting::sync([
+    'key1',
+    'key2',
+    'key3',
+]);//Thêm nhiều config của app vào Setting theo key
 ```
 
 > Package sử dụng các [array helpers](http://laravel.com/docs/5.1/helpers#arrays) của laravel, để biết cách sử dụng `$key` rõ hơn vui lòng đọc thêm tại [Laravel Helper Functions](http://laravel.com/docs/5.1/helpers#arrays).

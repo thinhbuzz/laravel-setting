@@ -8,10 +8,30 @@ use Illuminate\Foundation\Application;
 
 class LaravelSetting
 {
-    protected $pathSetting;
+    /**
+     * List all settings.
+     *
+     * @var array
+     */
     protected $settings;
+    /**
+     * Flag change values.
+     *
+     * @var boolean
+     */
     protected $isChange = false;
+    /**
+     * Config of package.
+     *
+     * @var array
+     */
     protected $configPackage;
+    /**
+     * Instance of config.
+     *
+     * @var \Illuminate\Contracts\Config\Repository
+     */
+    protected $configApp;
     protected $defaultSetting = [];
 
     /**
@@ -20,7 +40,8 @@ class LaravelSetting
      */
     public function __construct(Application $app)
     {
-        $this->configPackage = $app->config['setting'];
+        $this->configApp = $app->config;
+        $this->configPackage = $this->configApp->get('setting');
         $this->load();
     }
 
@@ -55,9 +76,14 @@ class LaravelSetting
      * @param bool $default
      * @return mixed
      */
-    public function get($key, $default = false)
+    public function get($key, $default = false, $system = false)
     {
-        return array_get($this->settings, $key, $default);
+        $return = array_get($this->settings, $key);
+        if (!isset($return) && ($system === true || $this->configPackage['system_cnf'] === true))
+            $return = $this->configApp->get($key, $default);
+        else
+            $return = $default;
+        return $return;
     }
 
     /**
@@ -149,6 +175,22 @@ class LaravelSetting
     {
         $this->isChange = true;
         $this->settings = [];
+        return $this;
+    }
+
+    public function sync($key = false)
+    {
+        if ($key === false) {
+            array_push($this->settings, $this->configApp->all());
+        } elseif (is_array($key)) {
+            foreach ($key as $k) {
+                $this->add($k, $this->configApp->get($k));
+            }
+        } else {
+            $this->add($key, $this->configApp->get($key));
+        }
+        $this->isChange = true;
+        $this->save();
         return $this;
     }
 
