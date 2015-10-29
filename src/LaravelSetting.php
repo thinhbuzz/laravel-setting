@@ -181,7 +181,7 @@ class LaravelSetting
     public function sync($key = false)
     {
         if ($key === false) {
-            array_push($this->settings, $this->configApp->all());
+            $this->settings = array_merge($this->settings, $this->configApp->all());
         } elseif (is_array($key)) {
             foreach ($key as $k) {
                 $this->add($k, $this->configApp->get($k));
