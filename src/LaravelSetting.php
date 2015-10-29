@@ -4,31 +4,35 @@
 namespace Buzz;
 
 
+use Illuminate\Foundation\Application;
+
 class LaravelSetting
 {
     protected $pathSetting;
     protected $settings;
+    protected $isChange = false;
+    protected $configPackage;
     protected $defaultSetting = [];
 
     /**
      *
      * @param $pathSetting string to file
      */
-    public function __construct($pathSetting)
+    public function __construct(Application $app)
     {
-        $this->pathSetting = $pathSetting;
+        $this->configPackage = $app->config['setting'];
         $this->load();
     }
 
     /**
      * Boot package
      */
-    private function load()
+    protected function load()
     {
-        if (file_exists($this->pathSetting) === false) {
+        if (file_exists($this->configPackage['path']) === false) {
             $this->createDefault();
         }
-        $settings = file_get_contents($this->pathSetting);
+        $settings = file_get_contents($this->configPackage['path']);
         $decoded = json_decode($settings, true);
         $settingArray = is_null($decoded) ? $this->defaultSetting : $decoded;
         $this->settings = $settingArray;
@@ -40,7 +44,9 @@ class LaravelSetting
      */
     public function setData($data)
     {
+        $this->isChange = true;
         $this->settings = $data;
+        return $this;
     }
 
     /**
@@ -78,6 +84,8 @@ class LaravelSetting
         } else {
             array_set($this->settings, $keys, $value);
         }
+        $this->isChange = true;
+        return $this;
     }
 
     /**
@@ -93,6 +101,8 @@ class LaravelSetting
         } else {
             array_forget($this->settings, $keys);
         }
+        $this->isChange = true;
+        return $this;
     }
 
     /**
@@ -110,6 +120,8 @@ class LaravelSetting
         } else {
             $this->settings = array_add($this->settings, $keys, $value);
         }
+        $this->isChange = true;
+        return $this;
     }
 
     /**
@@ -124,9 +136,10 @@ class LaravelSetting
     /**
      * Load default setting file
      */
-    private function createDefault()
+    protected function createDefault()
     {
-        file_put_contents($this->pathSetting, json_encode($this->defaultSetting));
+        $this->isChange = true;
+        file_put_contents($this->configPackage['path'], json_encode($this->defaultSetting));
     }
 
     /**
@@ -134,14 +147,19 @@ class LaravelSetting
      */
     public function clean()
     {
+        $this->isChange = true;
         $this->settings = [];
+        return $this;
     }
 
     /**
      * Save all change on settings
      */
-    public function save()
+    public function save($force = false)
     {
-        file_put_contents($this->pathSetting, json_encode($this->settings));
+        if ($this->isChange === true || $this->configPackage['force_save'] === true || $force === true) {
+            file_put_contents($this->configPackage['path'], json_encode($this->settings));
+        }
+        return $this;
     }
 }

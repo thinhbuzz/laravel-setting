@@ -36,8 +36,7 @@ class LaravelSettingServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton('LaravelSetting', function ($app) {
-            $config = $app->config['setting'];
-            return new LaravelSetting($config['path']);
+            return new LaravelSetting($app);
         });
     }
 

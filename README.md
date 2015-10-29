@@ -54,6 +54,7 @@ return [
     'path' => storage_path('settings.json'),//đường dẫn tới file `setting.json`, nên đặt ở `storage` hoặc `resources`
     'auto_alias' => true,//tự động tạo thêm alias `Setting`
     'auto_save' => true,//tự động save sau khi kết thúc request (sẽ không hoạt động nếu sử dụng `exit` hoặc `die`)
+    'force_save' => false,//Bắt buộc gọi save dù không thực hiện thao tác add, set, remove
 ];
 ```
 
@@ -76,7 +77,7 @@ Mặc định package sẽ thêm alias `Setting` và bạn chỉ việc sử d�
 
 #### Tắt tự động lưu
 
-Mặc định package sẽ chỉ lưu khi kết thúc request, nếu bạn muốn tắt chức năng này thì sửa `'auto_save' => true,` và sau đó sử dụng `Setting::save()` (hoặc `YourAlias::save()` nếu bạn đã đổi alias).
+Mặc định package sẽ chỉ lưu khi kết thúc request và settings có thay đổi bất kì, nếu bạn muốn tắt chức năng này thì sửa `'auto_save' => true,` và sau đó sử dụng `Setting::save()` (hoặc `YourAlias::save()` nếu bạn đã đổi alias).
 ***Lưu ý: tính năng tự động lưu sẽ không hoạt động nếu bạn dùng `exit` hoặc `die` function
 
 
@@ -85,7 +86,7 @@ Mặc định package sẽ chỉ lưu khi kết thúc request, nếu bạn muố
 
 ```php
 Setting::clean();//xóa tất cả settings
-Setting::save();//Lưu tất cả các thay đổi
+Setting::save($force = false);//Lưu tất cả các thay đổi
 Setting::all();//Lấy ra tất cả settings
 Setting::has($key);//kiểm tra sự tồn tại của setting theo key
 Setting::get($key, $default = false);//lấy giá trị theo key
