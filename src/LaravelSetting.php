@@ -165,7 +165,7 @@ class LaravelSetting
     protected function createDefault()
     {
         $this->isChange = true;
-        file_put_contents($this->configPackage['path'], json_encode($this->defaultSetting));
+		$this->saveSettings($this->defaultSetting);
     }
 
     /**
@@ -200,8 +200,14 @@ class LaravelSetting
     public function save($force = false)
     {
         if ($this->isChange === true || $this->configPackage['force_save'] === true || $force === true) {
-            file_put_contents($this->configPackage['path'], json_encode($this->settings));
+			$this->saveSettings($this->settings);
         }
         return $this;
+    }
+	
+	protected function saveSettings($data = [])
+    {
+		$data = (array) $data;
+        file_put_contents($this->configPackage['path'], json_encode($data, JSON_PRETTY_PRINT));
     }
 }
