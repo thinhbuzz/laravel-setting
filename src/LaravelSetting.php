@@ -204,10 +204,24 @@ class LaravelSetting
         }
         return $this;
     }
-	
-	protected function saveSettings($data = [])
+
+    /**
+     * Save settings
+     * @param array $data
+     */
+    protected function saveSettings($data = [])
     {
 		$data = (array) $data;
-        file_put_contents($this->configPackage['path'], json_encode($data, JSON_PRETTY_PRINT));
+        file_put_contents($this->configPackage['path'], $this->prettyJsonEncode($data));
+    }
+
+    /**
+     * Pertty json encode
+     * @param $data
+     * @return string
+     */
+    protected function prettyJsonEncode($data)
+    {
+        return json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK | JSON_UNESCAPED_SLASHES);
     }
 }
