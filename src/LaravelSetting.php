@@ -33,6 +33,7 @@ class LaravelSetting
      */
     protected $configApp;
     protected $defaultSetting = [];
+    protected $defaultKeyCheck = 'packageKeyCheck';
 
     /**
      *
@@ -67,6 +68,7 @@ class LaravelSetting
     {
         $this->isChange = true;
         $this->settings = $data;
+
         return $this;
     }
 
@@ -78,11 +80,13 @@ class LaravelSetting
      */
     public function get($key, $default = false, $system = false)
     {
-        $return = array_get($this->settings, $key);
-        if (!isset($return) && ($system === true || $this->configPackage['system_cnf'] === true))
-            $return = $this->configApp->get($key, $default);
-        else
-            $return = $default;
+        $return = array_get($this->settings, $key, $this->defaultKeyCheck);
+        if ($return === $this->defaultKeyCheck) {
+            if ($system === true || $this->configPackage['system_cnf'] === true)
+                $return = $this->configApp->get($key, $default);
+            else
+                $return = $default;
+        }
         return $return;
     }
 
@@ -93,7 +97,7 @@ class LaravelSetting
      */
     public function has($key)
     {
-        return array_get($this->settings, $key, false) !== false;
+        return array_get($this->settings, $key, $this->defaultKeyCheck) !== $this->defaultKeyCheck;
     }
 
     /**
@@ -111,6 +115,7 @@ class LaravelSetting
             array_set($this->settings, $keys, $value);
         }
         $this->isChange = true;
+
         return $this;
     }
 
@@ -128,6 +133,7 @@ class LaravelSetting
             array_forget($this->settings, $keys);
         }
         $this->isChange = true;
+
         return $this;
     }
 
@@ -147,6 +153,7 @@ class LaravelSetting
             $this->settings = array_add($this->settings, $keys, $value);
         }
         $this->isChange = true;
+
         return $this;
     }
 
@@ -165,7 +172,7 @@ class LaravelSetting
     protected function createDefault()
     {
         $this->isChange = true;
-		$this->saveSettings($this->defaultSetting);
+        $this->saveSettings($this->defaultSetting);
     }
 
     /**
@@ -175,6 +182,7 @@ class LaravelSetting
     {
         $this->isChange = true;
         $this->settings = [];
+
         return $this;
     }
 
@@ -191,6 +199,7 @@ class LaravelSetting
         }
         $this->isChange = true;
         $this->save();
+
         return $this;
     }
 
@@ -200,8 +209,9 @@ class LaravelSetting
     public function save($force = false)
     {
         if ($this->isChange === true || $this->configPackage['force_save'] === true || $force === true) {
-			$this->saveSettings($this->settings);
+            $this->saveSettings($this->settings);
         }
+
         return $this;
     }
 
@@ -211,7 +221,7 @@ class LaravelSetting
      */
     protected function saveSettings($data = [])
     {
-		$data = (array) $data;
+        $data = (array)$data;
         file_put_contents($this->configPackage['path'], $this->prettyJsonEncode($data));
     }
 
