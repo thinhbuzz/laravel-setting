@@ -78,8 +78,8 @@ class LaravelSettingServiceProvider extends ServiceProvider
     private function registerAlias($alias)
     {
         if ($alias === true) {
-            $loader = \Illuminate\Foundation\AliasLoader::getInstance();
-            $loader->alias('Setting', LaravelSettingFacade::class);
+            \Illuminate\Foundation\AliasLoader::getInstance()
+				->alias('Setting', LaravelSettingFacade::class);
         }
     }
 }

@@ -33,7 +33,6 @@ class LaravelSetting
      */
     protected $configApp;
     protected $defaultSetting = [];
-    protected $defaultKeyCheck = 'packageKeyCheck';
 
     /**
      *
@@ -80,14 +79,12 @@ class LaravelSetting
      */
     public function get($key, $default = false, $system = false)
     {
-        $return = array_get($this->settings, $key, $this->defaultKeyCheck);
-        if ($return === $this->defaultKeyCheck) {
-            if ($system === true || $this->configPackage['system_cnf'] === true)
-                $return = $this->configApp->get($key, $default);
-            else
-                $return = $default;
-        }
-        return $return;
+		if ($this->has($key)) {
+			return array_get($this->settings, $key, $default);
+		} elseif ($system === true || $this->configPackage['system_cnf'] === true){
+			return  $this->configApp->get($key, $default);
+		}
+		return $default;
     }
 
     /**
@@ -97,7 +94,7 @@ class LaravelSetting
      */
     public function has($key)
     {
-        return array_get($this->settings, $key, $this->defaultKeyCheck) !== $this->defaultKeyCheck;
+        return array_has($this->settings, $key);
     }
 
     /**
