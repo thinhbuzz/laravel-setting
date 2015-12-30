@@ -122,13 +122,7 @@ class LaravelSetting
      */
     public function remove($keys)
     {
-        if (is_array($keys)) {
-            foreach ($keys as $key) {
-                array_forget($this->settings, $key);
-            }
-        } else {
-            array_forget($this->settings, $keys);
-        }
+        array_forget($this->settings, $keys);
         $this->isChange = true;
 
         return $this;
